@@ -1,0 +1,144 @@
+<html ng-app="babyNamesApp">
+    <head>
+        <meta charset="utf-8" /> 
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css"/>
+        <script
+        src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+        <script src="babynames.js"></script>
+
+        <style type="text/css">
+            body {
+                background-color: #7FDBFF;
+            }
+
+            body>.ui.segment {
+                left: 25%;
+                width: 50%;
+            }
+
+            .ui.grid {
+                /*left: 25%;*/
+                width: 50%;
+            }
+
+            .ui.tooltip {
+                display: none;
+            }
+                
+            .showtooltip:hover .ui.tooltip {
+                display: block;
+            }
+        </style>
+    </head>
+    <body ng-controller="BabyNamesController as nameList" ng-cloak>
+        <div style="height:5em;"></div>
+        <div class="ui segment center aligned" ng-show="nameList.nameA != '?'">
+
+            <div class="ui horizontal divider">
+                Vælg...
+            </div>
+
+            <div class="ui massive buttons">
+                <div class="ui red button" ng-class="{'disabled': nameList.nameA == null || nameList.nameA == '?' }" ng-click="nameList.select([nameList.nameA], [nameList.nameB])">
+                    <i class="heart icon"></i> {{nameList.nameA}}
+                </div>
+                <div class="or" data-text="el."></div>
+                <div class="ui red button" ng-click="nameList.select([nameList.nameB], [nameList.nameA])" ng-class="{'disabled': nameList.nameB == null || nameList.nameB == '?' }">
+                    <i class="heart icon"></i> {{nameList.nameB}}
+                </div>
+            </div>
+
+            <div class="ui horizontal divider">
+                eller...
+            </div>
+
+            <div class="ui large buttons">
+                <div class="ui positive button" ng-click="nameList.select([nameList.nameA, nameList.nameB], [])">
+                    <i class="heart icon"></i> Begge &nbsp;<i class="heart icon"></i>
+                </div>
+                <div class="or" data-text="el."></div>
+                <div class="ui black button" ng-click="nameList.select([], [nameList.nameA, nameList.nameB])">
+                    <i class="thumbs down icon"></i> Ingen
+                </div>
+                <div class="or" data-text="el."></div>
+                <div class="ui blue button" ng-click="nameList.decide_later()">
+                    <i class="help icon"></i> Beslut senere
+                </div>
+            </div>
+        </div>
+
+        <center>
+        <div class="ui three column doubling grid">
+            <div class="column">
+                <div class="ui stacked segment">
+                    <div class="floating ui black label">{{nameList.bad.length}}</div>
+                    <a class="ui black ribbon label"><i class="thumbs down icon"></i></a>
+                    <div class="ui divided list">
+                        <div class="item showtooltip" ng-repeat="name in nameList.bad">
+                            <button class="ui mini basic icon button right floated tooltip" ng-click="nameList.undo(name)">
+                                <i class="undo icon"></i>
+                            </button>
+                            <i class="thumbs down icon"></i>
+                            <div class="content">{{name}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui piled segment">
+                    <div class="floating ui blue label">{{nameList.names.length}}</div>
+                    <!--<div class="ui large blue top attached label">Mangler</div>-->
+                    <br/>
+                    <div class="ui divided list">
+                        <div class="item" ng-repeat="name in nameList.get_short_names_list()">
+                            <i class="help icon"></i>
+                            <div class="content">{{name}}</div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="ui fluid basic orange icon button" ng-click="nameList.reset_all_names()">
+                        <i class="erase icon"></i> Gendan <i>alle</i> navne
+                    </div>
+
+                    &nbsp;
+
+                    <label for="file" class="ui fluid basic blue icon button">
+                        <i class="file text icon"></i> Importér navneliste...
+                    </label>
+                    <input type="file" id="file" accept=".json" style="display:none" custom-on-change="nameList.add_names">
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui stacked segment">
+                    <div class="floating ui red label">{{nameList.good.length}}</div>
+                    <a class="ui red ribbon label"><i class="heart icon"></i></a>
+                    <div class="ui divided list">
+                        <div class="item showtooltip" ng-repeat="name in nameList.good">
+                            <button class="ui mini basic icon button right floated tooltip" ng-click="nameList.undo(name)">
+                                <i class="undo icon"></i>
+                            </button>
+                            <i class="heart icon"></i>
+                            <div class="content">{{name}}</div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="ui fluid basic blue icon button" ng-click="nameList.try_again_with_good()" ng-show="nameList.good.length">
+                        <i class="exchange icon"></i> Vælg igen ud fra disse navne
+                    </div>
+                    
+                    &nbsp;
+
+                    <a class="ui fluid basic blue icon button" filedownload download="navne.json" title="Download som JSON">
+                        <i class="download icon"></i> Download navneliste
+                    </a>
+                </div>
+            </div>
+        </div>
+        </center>
+    </body>
+</html>
