@@ -93,6 +93,14 @@ angular.module('babyNamesApp', [])
         }
     }
 
+    nameList.clear_all_names = function() {
+        if (confirm("Dette vil fjerne alle navne. Vil du fortsætte?")) {
+            nameList.names = [];
+            nameList.good = [];
+            nameList.bad = [];
+        }
+    }
+
     var storage = window.localStorage;
     nameList.names = JSON.parse(storage.getItem("names"));
     nameList.good = JSON.parse(storage.getItem("names_good")) || [];
